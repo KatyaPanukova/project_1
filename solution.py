@@ -81,7 +81,7 @@ class Product:
 
     @staticmethod
     def del_product(code):
-        """"""
+        """Deleted object."""
         k = 0
         for i in Product.lst_products:
             if str(code) == str(i.code):
