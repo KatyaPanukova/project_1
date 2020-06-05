@@ -1,67 +1,105 @@
+class Load:
+    """Work with files."""
+    @classmethod
+    def write(cls, file):
+        """Read the file."""
+        with open(file) as file_1:
+            lines = file_1.readlines()
+            for i in lines:
+                i = i[:-1]
+                buyer = i.split(';')[0]
+                basket = i.split(';')[1:]
+                Market.lst_products.append(Market(buyer, basket))
+                for item in basket:
+                    Product.lst_products.append(Product(item.split()))
+
+
 class Market:
     """The class describes the product."""
 
-    sum_person = 0
-    sum_all = 0
-    max_val = 0
-    val_price = []
-    price_ = []
+    lst_products = []
 
-    def __init__(self, info, __data=' index: '):
+    def __init__(self, buyer, basket):
         """Initialization method."""
-
-        self.__num_buy = info[0]
-        self.products = info[1]
-        self.__data = __data or ' date: '
-
-        for price in self.products:
-            Market.sum_person += int(price[2])
-            Market.val_price.append(int(price[2]))
-            Market.price_.append(str(price[0]))
-
-    def __set__data(self, __data):
-        """The method of changing the values of the index date."""
-
-        if '.' in self.products[0][1]:
-            self.__data = ' date: '
-        else:
-            self.__data = ' index: '
-
-        return self.__data
-
-    def sum_buy(self):
-        """Method of calculating the total sum of purchase."""
-
-        sum_per = ''
-        sum_per += 'Total sum: ' + str(Market.sum_person) + ' rubles.' + '\n'
-
-        return sum_per
-
-    def max_buy(self):
-        """Method of searching for the maximum value of purchase."""
-
-        maximum = ''
-        product = ''
-        Market.max_val = max(Market.val_price)
-        product += str(Market.price_[Market.val_price.index(Market.max_val)])
-        maximum += 'The most expensive thing in your purchase of ' + str(product) + ' is ' + str(Market.max_val) + '.'\
-                   + '\n'
-
-        return maximum
+        self.buyer = buyer
+        self.basket = basket
 
     def __str__(self):
         """String output method."""
 
         result = ''
-        result += str(self.__num_buy) + '\n'
-        count = 1
-        for i in self.products:
-            result += str(count) + ' ' + str(i[0]).capitalize() + self.__set__data(self.__data) + i[1] + ' price: ' + i[2] + '\n'
-            count += 1
+        result += '{}'.format(self.buyer) + '\n'
+        for item in self.basket:
+            item = item.split()
+            result += str(Product(item))
+        result += '\n'
 
         return result
 
     def __repr__(self):
         """Output method."""
 
+        return self.__str__()
+
+
+class Product:
+    """Class described the product."""
+
+    lst_products = []
+
+    def __init__(self, item):
+        """Initialization method."""
+        self.name = item[0]
+        self.code = item[1]
+        self.date = item[2]
+        self.price = item[3]
+
+        dictionary = {'385': 'Switzerland', '460': 'Russia', '400': 'German', '009': 'USA', '045': 'Japan'}
+
+        self.country = dictionary[self.code[:3]]
+
+    @staticmethod
+    def max_price():
+        """Maximal price."""
+        max_value = 0
+        cod_pro = ''
+        for i in Product.lst_products:
+            if int(i.price) > max_value:
+                max_value = int(i.price)
+                cod_pro = i.code
+
+        return 'Max price of {}: {}\n'.format(cod_pro, int(max_value))
+
+    @staticmethod
+    def total():
+        """Total sum for one buyer."""
+        all = 0
+        for i in Product.lst_products:
+            all += int(i.price)
+
+        return 'Total sum: {}\n'.format(int(all))
+
+    @staticmethod
+    def del_product(code):
+        """"""
+        k = 0
+        for i in Product.lst_products:
+            if str(code) == str(i.code):
+                del i.code
+                k = 1
+        if k == 1:
+            print('Product with code: {} deleted.'.format(code))
+        else:
+            print('Product with code: {} not founded.'.format(code))
+
+    def __str__(self):
+        """String method."""
+        s = ''
+        s += '{} {} price: {} date: {} country: {}'.format(self.name, self.code, self.price, self.date,
+                                                           str(self.country)) + '\n'
+
+        return s
+
+    def __repr__(self):
+        """Output method."""
         return self.__str__()
