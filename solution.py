@@ -44,7 +44,7 @@ class Market:
 
     @classmethod
     def return_check(cls, buyer, date, sale=None):
-        """"""
+        """Return all check of your basket."""
         date_new = Date(date)
         total = 0
         result = ''
